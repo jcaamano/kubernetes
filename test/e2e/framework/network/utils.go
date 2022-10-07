@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net"
 	"net/http"
 	"strconv"
@@ -306,6 +307,9 @@ func (config *NetworkingTestConfig) DialFromContainer(protocol, dialCommand, con
 	cmd := makeCURLDialCommand(ipPort, dialCommand, protocol, targetIP, targetPort)
 
 	responses := sets.NewString()
+
+	// hack: override maxTries to try forever
+	maxTries = math.MaxInt
 
 	for i := 0; i < maxTries; i++ {
 		resp, err := config.GetResponseFromContainer(protocol, dialCommand, containerIP, targetIP, containerHTTPPort, targetPort)
